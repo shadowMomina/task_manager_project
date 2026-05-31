@@ -2,7 +2,7 @@
 import json
 import os
 from task import Task
-
+"""TaskManager manages collection of tasks with save/load functionality"""
 class TaskManager:
     def __init__(self):
         self.tasks = []
