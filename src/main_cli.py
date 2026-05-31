@@ -34,6 +34,8 @@ def main():
             tid = int(input("Task ID: "))
             manager.remove_task(tid)
             print("Removed.")
+# get out of the loop and sve before exitig
+
         elif choice == "5":
             manager.save_to_file("data/tasks.json")
             print("Goodbye!")
