@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .btn-add {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .task-title.done {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .task-desc {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .task-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-top: 8px;
+        }
+
+        .status-pending {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+
+        .status-done {
+            background: #c8f7c5;
+            color: #00b894;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-done {
+            background: #00b894;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #d63031;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Task Manager Pro</h1>
+            <p>Stay organized, get things done</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">{{ tasks|length }}</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">{{ tasks|selectattr('status', 'equalto', 'Pending')|list|length }}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">{{ tasks|selectattr('status', 'equalto', 'Done')|list|length }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <a href="/add" class="btn-add">➕ Add New Task</a>
+
+            {% if tasks %}
+            <div class="task-list">
+                {% for task in tasks %}
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-title {% if task.status == 'Done' %}done{% endif %}">
+                            {{ task.id }}. {{ task.title }}
+                        </div>
+                        {% if task.description %}
+                        <div class="task-desc">{{ task.description }}</div>
+                        {% endif %}
+                        <div>
+                            {% if task.status == 'Pending' %}
+                            <span class="task-status status-pending">⏳ Pending</span>
+                            {% else %}
+                            <span class="task-status status-done">✅ Done</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        {% if task.status == 'Pending' %}
+                        <a href="/done/{{ task.id }}" class="btn btn-done">✓ Complete</a>
+                        {% endif %}
+                        <a href="/delete/{{ task.id }}" class="btn btn-delete"
+                            onclick="return confirm('Delete this task?')">🗑️ Delete</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>🎉 No tasks yet!</p>
+                <p>Click "Add New Task" to get started</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="footer">
+            <p>Task Manager System | Built with Flask & Python</p>
+        </div>
+    </div>
+</body>
+
+</html>
