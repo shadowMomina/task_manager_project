@@ -1,3 +1,4 @@
+# Task class - Represents a single task in the system
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/src")
