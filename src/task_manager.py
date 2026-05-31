@@ -1,3 +1,4 @@
+# TaskManager class - Manages collection of tasks
 import json
 import os
 from task import Task
