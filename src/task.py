@@ -1,3 +1,4 @@
+# Task class - Represents a single task in the system
 class Task:
     def __init__(self, task_id, title, description, status="Pending"):
         self.id = task_id
